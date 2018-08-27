@@ -11,6 +11,7 @@ namespace CodingExercise\Service;
 use CodingExercise\Model\Object\Invoice;
 use CodingExercise\Model\Object\Purchase;
 use CodingExercise\Storage\OrderedStorageInterface;
+use Money\Converter;
 
 class InvoiceService
 {
@@ -21,10 +22,12 @@ class InvoiceService
 
     public function __construct(
         OrderedStorageInterface $storage,
+        Converter $converter,
         DiscountService $discountService
     )
     {
         $this->storage = $storage;
+        $this->converter = $converter;
         $this->discountService = $discountService;
     }
 
