@@ -1,6 +1,16 @@
 {
-    "require": {
-        "symfony/console": "^4.1",
-        "symfony/dependency-injection": "^4.1"
+  "require": {
+    "symfony/console": "^4.1",
+    "symfony/dependency-injection": "^4.1",
+    "monolog/monolog": "^1.23",
+    "moneyphp/money": "^3.1"
+  },
+  "autoload": {
+    "psr-4": {
+      "CodingExercise\\": "src/"
     }
+  },
+  "require-dev": {
+    "escapestudios/symfony2-coding-standard": "3.x-dev"
+  }
 }
