@@ -8,20 +8,19 @@
 
 namespace CodingExercise\Service;
 
-use CodingExercise\Model\Object\Currency;
 use CodingExercise\Model\Object\Invoice;
 use CodingExercise\Model\Object\Purchase;
-use CodingExercise\Storage\StorageInterface;
+use CodingExercise\Storage\OrderedStorageInterface;
 
 class InvoiceService
 {
     /* @var DiscountService $discountService */
     private $discountService;
-    /* @var StorageInterface $storage */
+    /* @var OrderedStorageInterface $storage */
     private $storage;
 
     public function __construct(
-        StorageInterface $storage,
+        OrderedStorageInterface $storage,
         DiscountService $discountService
     )
     {
@@ -31,7 +30,7 @@ class InvoiceService
 
     public function generate()
     {
-        foreach ($this->storage->getPurchase() as $p) {
+        foreach ($this->storage->getPurchases() as $p) {
             $this->storage->writeInvoice($this->calcInvoice($p));
         }
     }

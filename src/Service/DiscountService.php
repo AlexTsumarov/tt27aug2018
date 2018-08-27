@@ -24,11 +24,15 @@ class DiscountService
         $this->aggregator = $aggregator;
     }
 
+    /**
+     * @param Purchase $p
+     * @return Money
+     */
     public function apply(Purchase $p): Money
     {
         $moneys = [];
         foreach ($this->discounts as $discount) {
-            $moneys[$discount->getName()] = $discount->apply($p);
+            $moneys[] = $discount->apply($p);
         }
         return $this->aggregator->getMoney($moneys);
     }

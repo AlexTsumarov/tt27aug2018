@@ -3,14 +3,13 @@
 namespace CodingExercise\Storage;
 
 use CodingExercise\Model\Object\Invoice;
-use CodingExercise\Model\Object\Purchase;
 
-interface StorageInterface
+interface OrderedStorageInterface
 {
     /**
-     * @return Purchase[]
+     * @return array
      */
-    function getPurchase(): \Iterator;
+    function getPurchases(): array;
 
     /**
      * @param Invoice $i

@@ -7,7 +7,5 @@ use Money\Money;
 
 interface RuleInterface
 {
-    function getName(): string;
-
     function apply(Purchase $p): Money;
 }
