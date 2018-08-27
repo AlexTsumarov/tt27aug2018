@@ -2,23 +2,22 @@
 
 namespace CodingExercise\Model\Object;
 
+use Money\Money;
+
 class Purchase
 {
     /* @var int $id */
     private $id;
     /* @var \DateTimeImmutable $date */
     private $date;
-    /* @var float $amount */
-    private $amount;
-    /* @var Currency $currency */
-    private $currency;
+    /* @var Money $money */
+    private $money;
 
-    public function __construct(int $id, \DateTimeImmutable $date, float $amount, Currency $currency)
+    public function __construct(int $id, \DateTimeImmutable $date, Money $money)
     {
         $this->id = $id;
         $this->date = $date;
-        $this->amount = $amount;
-        $this->currency = $currency;
+        $this->money = $money;
     }
 
     /**
@@ -38,18 +37,10 @@ class Purchase
     }
 
     /**
-     * @return float
+     * @return Money
      */
-    public function getAmount(): float
+    public function getMoney(): Money
     {
-        return $this->amount;
-    }
-
-    /**
-     * @return Currency
-     */
-    public function getCurrency(): Currency
-    {
-        return $this->currency;
+        return $this->money;
     }
 }

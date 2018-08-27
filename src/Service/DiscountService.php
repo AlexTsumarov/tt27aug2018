@@ -2,24 +2,34 @@
 
 namespace CodingExercise\Service;
 
-use CodingExercise\Model\Discount\DiscountInterface;
+use CodingExercise\Model\Discount\Aggregator\AggregatorInterface;
+use CodingExercise\Model\Discount\Rule\RuleInterface;
 use CodingExercise\Model\Object\Purchase;
+use Money\Money;
 
 class DiscountService
 {
-    /* @var DiscountInterface[] $discounts */
+    /* @var RuleInterface[] $discounts */
     private $discounts = [];
+    /* @var AggregatorInterface $aggregator */
+    private $aggregator;
 
-    /* @var DiscountInterface[] $discounts */
-    public function __construct(array $discounts)
+    /**
+     * @param RuleInterface[] $discounts
+     * @param AggregatorInterface $aggregator
+     */
+    public function __construct(array $discounts, AggregatorInterface $aggregator)
     {
         $this->discounts = $discounts;
+        $this->aggregator = $aggregator;
     }
 
-    public function apply(Purchase $p): float
+    public function apply(Purchase $p): Money
     {
+        $moneys = [];
         foreach ($this->discounts as $discount) {
-            $discount = $discount->apply($p);
+            $moneys[$discount->getName()] = $discount->apply($p);
         }
+        return $this->aggregator->getMoney($moneys);
     }
 }

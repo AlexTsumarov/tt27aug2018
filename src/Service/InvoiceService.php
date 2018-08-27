@@ -20,7 +20,10 @@ class InvoiceService
     /* @var StorageInterface $storage */
     private $storage;
 
-    public function __construct(StorageInterface $storage, DiscountService $discountService)
+    public function __construct(
+        StorageInterface $storage,
+        DiscountService $discountService
+    )
     {
         $this->storage = $storage;
         $this->discountService = $discountService;
@@ -29,18 +32,15 @@ class InvoiceService
     public function generate()
     {
         foreach ($this->storage->getPurchase() as $p) {
-            $this->storage->writeInvoice($this->createInvoice($p));
+            $this->storage->writeInvoice($this->calcInvoice($p));
         }
     }
 
-    public function createInvoice(Purchase $p): Invoice
+    private function calcInvoice(Purchase $p): Invoice
     {
-        /* @var Purchase $p */
-        $amount = $this->discountService->apply($p);
         return new Invoice(
             $p->getId(),
-            $amount,
-            Currency::EUR
+            $this->discountService->apply($p)
         );
     }
 }
