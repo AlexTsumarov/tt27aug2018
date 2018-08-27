@@ -4,6 +4,7 @@ namespace CodingExercise\Storage;
 
 use CodingExercise\Model\Object\Invoice;
 use CodingExercise\Model\Object\Purchase;
+use Money\Currency;
 use Money\Money;
 
 class CsvOrderedOrderedStorage implements OrderedStorageInterface
@@ -20,14 +21,14 @@ class CsvOrderedOrderedStorage implements OrderedStorageInterface
 
     public function __construct(string $in, string $out)
     {
-        $this->in = new \SplFileInfo($in);
-        $this->out = new \SplFileInfo($out);
+        $this->in = ($in);
+        $this->out = ($out);
     }
 
     /**
      * @return Purchase[]
      */
-    function getPurchases(): array
+    function getPurchases(): \ArrayAccess
     {
         $file = new \SplFileObject($this->in);
         $file->setFlags(\SplFileObject::READ_CSV);
@@ -37,11 +38,11 @@ class CsvOrderedOrderedStorage implements OrderedStorageInterface
         $arr = new \SplFixedArray($rowsCount);
         $file->rewind();
 
-        foreach ($file as $row) {
-            $arr = new Purchase(
+        foreach ($file as $idx => $row) {
+            $arr[$idx] = new Purchase(
                 $row[self::POS_ID],
-                $row[self::POS_DATE],
-                new Money($row[self::POS_AMOUNT], $row[self::POS_CURRENCY])
+                new \DateTimeImmutable($row[self::POS_DATE]),
+                new Money($row[self::POS_AMOUNT] * 100, new Currency($row[self::POS_CURRENCY]))
             );
         }
         return $arr;

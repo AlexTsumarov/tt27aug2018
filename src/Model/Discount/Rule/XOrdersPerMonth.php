@@ -15,19 +15,19 @@ class XOrdersPerMonth implements RuleInterface
 {
     const DATE_FORMAT_YM = 'ym';
     private $ordersPerMonth;
-    private $rate;
+    private $percent;
     private $history = [];
 
-    function __construct(int $ordersPerMonth, float $rate)
+    function __construct(int $ordersPerMonth, float $percent)
     {
         $this->ordersPerMonth = $ordersPerMonth;
-        $this->rate = $rate;
+        $this->percent = 1 + $percent / 100;
     }
 
     function apply(Purchase $p): Money
     {
         if ($this->getCount($p) % $this->ordersPerMonth === 0) {
-            $amount = $p->getMoney()->getAmount() * $this->rate;
+            $amount = $p->getMoney()->getAmount() * $this->percent;
             return new Money($amount, $p->getMoney()->getCurrency());
         } else {
             return $p->getMoney();

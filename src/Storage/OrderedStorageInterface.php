@@ -9,7 +9,7 @@ interface OrderedStorageInterface
     /**
      * @return array
      */
-    function getPurchases(): array;
+    function getPurchases(): \ArrayAccess;
 
     /**
      * @param Invoice $i
