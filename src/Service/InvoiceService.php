@@ -19,6 +19,8 @@ class InvoiceService
     private $discountService;
     /* @var OrderedStorageInterface $storage */
     private $storage;
+    /* @var Converter $converter */
+    private $converter;
 
     public function __construct(
         OrderedStorageInterface $storage,
