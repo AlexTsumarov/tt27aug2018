@@ -23,25 +23,25 @@ class CsvStorage implements OrderedStorageInterface
     const POS_AMOUNT    = 2;
     const POS_CURRENCY  = 3;
 
-    /* @var \SplFileInfo $in */
-    private $in;
-    /* @var \SplFileInfo $out */
-    private $out;
     /* @var CurrencyFactory $cf */
     private $cf;
+    private $pathIn;
+    private $pathOut;
 
     /**
      * CsvStorage constructor.
      * @param CurrencyFactory $currencyFactory
-     * @param string $pathIn
-     * @param string $pathOut
      */
-    public function __construct(CurrencyFactory $cf, string $pathIn, string $pathOut)
+    public function __construct(CurrencyFactory $cf)
     {
         $this->cf = $cf;
-        $this->in = $pathIn;
-        $this->out = $pathOut;
-        @unlink($pathOut);
+    }
+
+    public function setConfig(string $pathIn, string $pathOut)
+    {
+        $this->pathIn = $pathIn;
+        $this->pathOut = $pathOut;
+        @unlink($this->pathOut);
     }
 
     /**
@@ -51,7 +51,7 @@ class CsvStorage implements OrderedStorageInterface
     : \Iterator
     {
         $arr = [];
-        $file = new \SplFileObject($this->in);
+        $file = new \SplFileObject($this->pathIn);
         $file->setFlags(\SplFileObject::READ_CSV);
         $file->setCsvControl(self::COL_DELIMITER);
         foreach ($file as $idx => $row) {
@@ -72,7 +72,7 @@ class CsvStorage implements OrderedStorageInterface
                 $i->getAmount() / 100,
                 $i->getCurrencyCode(),
             ]) . self::ROW_DELIMITER;
-        file_put_contents($this->out, $line, FILE_APPEND);
+        file_put_contents($this->pathOut, $line, FILE_APPEND);
         $this->logger->debug($line);
     }
 

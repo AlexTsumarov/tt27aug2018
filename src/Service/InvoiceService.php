@@ -2,6 +2,7 @@
 
 namespace CodingExercise\Service;
 
+use CodingExercise\Model\Currency\CurrencyFactory;
 use CodingExercise\Model\Object\Invoice;
 use CodingExercise\Model\Object\Purchase;
 use CodingExercise\Storage\OrderedStorageInterface;
@@ -22,15 +23,14 @@ class InvoiceService
 
     public function __construct(
         OrderedStorageInterface $storage,
-        Converter $converter,
-        DiscountService $discountService,
-        Currency $currency
+        CurrencyFactory $currencyFactory,
+        DiscountService $discountService
     )
     {
         $this->storage = $storage;
-        $this->converter = $converter;
+        $this->converter = $currencyFactory->getConverter();
         $this->discountService = $discountService;
-        $this->currency = $currency;
+        $this->currency = $currencyFactory->getDefaultCurrency();
     }
 
     public function generate()

@@ -2,13 +2,14 @@
 
 namespace CodingExercise\Model\Discount\Rule;
 
+use CodingExercise\Model\Currency\CurrencyFactory;
 use CodingExercise\Model\Object\Purchase;
 use Money\Currency;
 use Money\Money;
 
 class LastMonthTotal implements RuleInterface
 {
-    /* @var Money $threshold */
+    /* @var int $threshold */
     private $threshold;
     /* @var float $rate */
     private $rate;
@@ -17,11 +18,11 @@ class LastMonthTotal implements RuleInterface
     /* @var Currency $currency */
     private $currency;
 
-    function __construct(Money $threshold, float $percent, Currency $curr)
+    function __construct(int $threshold, float $percent, CurrencyFactory $cf)
     {
-        $this->threshold = $threshold;
+        $this->currency = $cf->getDefaultCurrency();
+        $this->threshold = new Money($threshold, $this->currency);
         $this->rate = 1 + $percent / 100;
-        $this->currency = $curr;
     }
 
     function apply(Purchase $p)

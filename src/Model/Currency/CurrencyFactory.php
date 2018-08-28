@@ -10,20 +10,24 @@ use Money\Exchange\ReversedCurrenciesExchange;
 
 class CurrencyFactory
 {
-    private $currencies = [];
+    private $currencies    = [];
+    private $exchangeRates = [];
+    private $converter     = [];
 
-    public function __construct(string $currCode)
+    public function __construct(string $currCode, array $exchangeRates)
     {
+        $this->exchangeRates = $exchangeRates;
+        $exchanger = new ReversedCurrenciesExchange(
+            new FixedExchange($this->exchangeRates)
+        );
+        $this->converter = new Converter(new ISOCurrencies(), $exchanger);
         $this->defaultCurrency = $this->getCurrency($currCode);
     }
 
-    public function getConverter(array $exchangeRates)
+    public function getConverter()
     : Converter
     {
-        $exchange = new ReversedCurrenciesExchange(
-            new FixedExchange($exchangeRates)
-        );
-        return new Converter(new ISOCurrencies(), $exchange);
+        return $this->converter;
     }
 
     public function getCurrency($code)

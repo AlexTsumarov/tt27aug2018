@@ -11,21 +11,36 @@ services:
         arguments: ['%logger.key%']
     currencyFactory:
         class:     CodingExercise\Model\Currency\CurrencyFactory
-        arguments: ['%currency.default%']
+        arguments:
+            - '%currency.default%'
+            - EUR:
+               USD: 1.21
+               GBP: 1.21
     ruleNoDiscount:
-        class:     CodingExercise\Model\Currency\NoDiscount
+        class:     CodingExercise\Model\Discount\Rule\NoDiscount
     ruleXOrdersPerMonth:
-        class:     CodingExercise\Model\Currency\XOrdersPerMonth
+        class:     CodingExercise\Model\Discount\Rule\XOrdersPerMonth
         arguments: [3,10]
     ruleLastMonthTotal:
-        class:     CodingExercise\Model\Currency\XOrdersPerMonth
-        arguments: [3,10]
+        class:     CodingExercise\Model\Discount\Rule\LastMonthTotal
+        arguments: [1000,5,'@currencyFactory']
     aggregator:
-        class:     CodingExercise\Model\Discount\Aggregator\CustomerMaxAmount;
-    mailer:
-        class:     Mailer
-        arguments: ['%mailer.transport%']
-    newsletter_manager:
-        class:     NewsletterManager
-        calls:
-            - [setMailer, ['@mailer']]
+        class:     CodingExercise\Model\Discount\Aggregator\CustomerMaxAmount
+    discountService:
+         class:    CodingExercise\Service\DiscountService
+         arguments:
+             - [ '@ruleNoDiscount' ]
+             - '@aggregator'
+         calls:
+            - [setLogger, ['@logger']]
+    storage:
+         class:     CodingExercise\Storage\CsvStorage
+         arguments: ['@currencyFactory']
+         calls:
+            - [setLogger, ['@logger']]
+    invoiceService:
+         class:     CodingExercise\Service\InvoiceService
+         arguments:
+             - '@storage'
+             - '@currencyFactory'
+             - '@discountService'
