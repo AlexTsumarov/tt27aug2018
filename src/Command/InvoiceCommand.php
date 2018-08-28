@@ -11,12 +11,12 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 
-class InvoiceBatchCommand extends Command
+class InvoiceCommand extends Command
 {
     protected function configure()
     {
         $this
-            ->setName('invoice:generate')
+            ->setName('invoice:convert')
             ->setDescription('Converting purchases to invoices ')
             ->addArgument('in', InputArgument::REQUIRED, 'Path to purchases file')
             ->addArgument('out', InputArgument::REQUIRED, 'Path to invoices file');

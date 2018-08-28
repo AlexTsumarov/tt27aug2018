@@ -12,7 +12,7 @@ class DiscountService
 {
     use LoggerAwareTrait;
 
-    const ERR_NO_DISCOUNT = 'At least one discout should be defined';
+    const ERR_NO_DISCOUNT = 'At least one discount rule should be defined';
 
     /* @var RuleInterface[] $rules */
     private $rules = [];

@@ -10,6 +10,10 @@ use Money\Converter;
 use Money\Currency;
 use Money\Money;
 
+/**
+ * Class InvoiceService
+ * @package CodingExercise\Service
+ */
 class InvoiceService
 {
     /* @var DiscountService $discountService */
@@ -21,6 +25,12 @@ class InvoiceService
     /* @var Currency $currency */
     private $currency;
 
+    /**
+     * InvoiceService constructor.
+     * @param OrderedStorageInterface $storage
+     * @param CurrencyFactory $currencyFactory
+     * @param DiscountService $discountService
+     */
     public function __construct(
         OrderedStorageInterface $storage,
         CurrencyFactory $currencyFactory,
@@ -45,6 +55,9 @@ class InvoiceService
         }
     }
 
+    /**
+     * @param Purchase $p
+     */
     private function convertCurrency(Purchase $p)
     {
         if (!$p->getMoney()->getCurrency()->equals($this->currency)) {
