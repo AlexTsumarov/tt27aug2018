@@ -16,5 +16,5 @@ interface AggregatorInterface
      * @param array $discounts
      * @return Money
      * */
-    function getMoney(array $discounts): Money;
+    function apply(array $discounts): Money;
 }

@@ -10,7 +10,7 @@ class CustomerMaxAmount implements AggregatorInterface
      * @param array $discounts
      * @return Money
      * */
-    function getMoney(array $discounts): Money
+    function apply(array $discounts): Money
     {
         return max($discounts);
     }

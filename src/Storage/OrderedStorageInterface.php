@@ -7,9 +7,10 @@ use CodingExercise\Model\Object\Invoice;
 interface OrderedStorageInterface
 {
     /**
-     * @return array
+     * @return \Iterator
      */
-    function getPurchases(): \ArrayAccess;
+    function getPurchases()
+    : \Iterator;
 
     /**
      * @param Invoice $i

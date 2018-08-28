@@ -1,0 +1,31 @@
+parameters:
+    logger.key: command
+    currency.default: EUR
+    rules:
+        ruleXOrdersPerMonth:
+            x: 3
+            percent: 10
+services:
+    logger:
+        class:     Monolog\Logger
+        arguments: ['%logger.key%']
+    currencyFactory:
+        class:     CodingExercise\Model\Currency\CurrencyFactory
+        arguments: ['%currency.default%']
+    ruleNoDiscount:
+        class:     CodingExercise\Model\Currency\NoDiscount
+    ruleXOrdersPerMonth:
+        class:     CodingExercise\Model\Currency\XOrdersPerMonth
+        arguments: [3,10]
+    ruleLastMonthTotal:
+        class:     CodingExercise\Model\Currency\XOrdersPerMonth
+        arguments: [3,10]
+    aggregator:
+        class:     CodingExercise\Model\Discount\Aggregator\CustomerMaxAmount;
+    mailer:
+        class:     Mailer
+        arguments: ['%mailer.transport%']
+    newsletter_manager:
+        class:     NewsletterManager
+        calls:
+            - [setMailer, ['@mailer']]

@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: home
- * Date: 8/27/2018
- * Time: 11:23 PM
- */
 
 namespace CodingExercise\Model\Discount\Rule;
 
@@ -13,34 +7,42 @@ use Money\Money;
 
 class XOrdersPerMonth implements RuleInterface
 {
-    const DATE_FORMAT_YM = 'ym';
     private $ordersPerMonth;
-    private $percent;
+    private $rate;
     private $history = [];
 
-    function __construct(int $ordersPerMonth, float $percent)
+    public function __construct(int $ordersPerMonth, float $percent)
     {
         $this->ordersPerMonth = $ordersPerMonth;
-        $this->percent = 1 + $percent / 100;
+        $this->rate = 1 + $percent / 100;
     }
 
-    function apply(Purchase $p): Money
+    public function apply(Purchase $p)
+    : Money
     {
+        $this->register($p);
         if ($this->getCount($p) % $this->ordersPerMonth === 0) {
-            $amount = $p->getMoney()->getAmount() * $this->percent;
-            return new Money($amount, $p->getMoney()->getCurrency());
-        } else {
-            return $p->getMoney();
+            return $p->getMoney()->multiply($this->rate);
         }
+        return $p->getMoney();
     }
 
-    private function getCount(Purchase $p): int
+    private function register(Purchase $p)
+    : void
     {
-        $ym = $p->getDate()->format($this::DATE_FORMAT_YM);
-        $this->history[$p->getId()][$ym] =
-            isset($hist)
-                ? $this->history[$p->getId()][$ym] + 1
+        $id = $p->getId();
+        $ym = $p->getYearMonth();
+        $this->history[$id][$ym] =
+            isset($this->history[$id][$ym])
+                ? $this->history[$id][$ym] + 1
                 : 1;
-        return $this->history[$p->getId()][$ym];
+    }
+
+    private function getCount(Purchase $p)
+    : int
+    {
+        $id = $p->getId();
+        $ym = $p->getYearMonth();
+        return $this->history[$id][$ym];
     }
 }

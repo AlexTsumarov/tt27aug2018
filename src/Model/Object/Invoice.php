@@ -4,7 +4,7 @@ namespace CodingExercise\Model\Object;
 
 use Money\Money;
 
-class Invoice
+final class Invoice
 {
     /* @var int $id */
     private $id;

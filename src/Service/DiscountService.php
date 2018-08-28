@@ -6,11 +6,16 @@ use CodingExercise\Model\Discount\Aggregator\AggregatorInterface;
 use CodingExercise\Model\Discount\Rule\RuleInterface;
 use CodingExercise\Model\Object\Purchase;
 use Money\Money;
+use Psr\Log\LoggerAwareTrait;
 
 class DiscountService
 {
-    /* @var RuleInterface[] $discounts */
-    private $discounts = [];
+    use LoggerAwareTrait;
+
+    const ERR_NO_DISCOUNT = 'At least one discout should be defined';
+
+    /* @var RuleInterface[] $rules */
+    private $rules = [];
     /* @var AggregatorInterface $aggregator */
     private $aggregator;
 
@@ -18,22 +23,26 @@ class DiscountService
      * @param RuleInterface[] $discounts
      * @param AggregatorInterface $aggregator
      */
-    public function __construct(array $discounts, AggregatorInterface $aggregator)
+    public function __construct(array $rules, AggregatorInterface $aggregator)
     {
-        $this->discounts = $discounts;
+        $this->rules = $rules;
         $this->aggregator = $aggregator;
+        if (count($rules) == 0) {
+            throw new \InvalidArgumentException(self::ERR_NO_DISCOUNT);
+        }
     }
 
     /**
      * @param Purchase $p
      * @return Money
      */
-    public function apply(Purchase $p): Money
+    public function apply(Purchase $p)
+    : Money
     {
-        $moneys = [];
-        foreach ($this->discounts as $discount) {
-            $moneys[] = $discount->apply($p);
+        $discounts = [];
+        foreach ($this->rules as $discount) {
+            $discounts[] = $discount->apply($p);
         }
-        return $this->aggregator->getMoney($moneys);
+        return $this->aggregator->apply($discounts);
     }
 }

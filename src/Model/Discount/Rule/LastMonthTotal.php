@@ -8,43 +8,49 @@ use Money\Money;
 
 class LastMonthTotal implements RuleInterface
 {
-    const DATE_FORMAT_YM = 'ym';
+    /* @var Money $threshold */
     private $threshold;
-    private $percent;
+    /* @var float $rate */
+    private $rate;
+    /* @var Money[] $history */
     private $history = [];
+    /* @var Currency $currency */
+    private $currency;
 
-    function __construct(int $threshold, float $percent)
+    function __construct(Money $threshold, float $percent, Currency $curr)
     {
-        $this->threshold = new Money($threshold, new Currency('eur'));
-        $this->percent = $percent;
+        $this->threshold = $threshold;
+        $this->rate = 1 + $percent / 100;
+        $this->currency = $curr;
     }
 
-    function apply(Purchase $p): Money
+    function apply(Purchase $p)
+    : Money
     {
         $this->register($p);
         $lastMonthTotal = $this->getLastMonthTotal($p);
         if ($lastMonthTotal && $lastMonthTotal->greaterThan($this->threshold)) {
-            $amount = $p->getMoney()->getAmount() * $this->percent;
-            return new Money($amount, $p->getMoney()->getCurrency());
-        } else {
-            return $p->getMoney();
+            return $p->getMoney()->multiply($this->rate);
         }
+        return $p->getMoney();
     }
 
-    private function register(Purchase $p): void
+    private function register(Purchase $p)
+    : void
     {
-        $ym = $p->getDate()->format($this::DATE_FORMAT_YM);
+        $ym = $p->getYearMonth();
         $this->history[$p->getId()][$ym] =
             isset($this->history[$p->getId()][$ym])
                 ? $p->getMoney()->add($this->history[$p->getId()][$ym])
                 : $p->getMoney();
     }
 
-    private function getLastMonthTotal(Purchase $p): Money
+    private function getLastMonthTotal(Purchase $p)
+    : Money
     {
-        $lym = $p->getDate()->modify('-1 month')->format($this::DATE_FORMAT_YM);
+        $lym = $p->getDate()->modify('-1 month')->format(Purchase::DATE_FORMAT_YM);
         return isset($this->history[$p->getId()][$lym])
-            ? $this->history[$p->getId()][$lym]->getAmount()
-            : new Money(0,new Currency('EUR'));
+            ? $this->history[$p->getId()][$lym]
+            : new Money(0, $this->currency);
     }
 }
