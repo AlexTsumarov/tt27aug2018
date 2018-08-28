@@ -2,6 +2,7 @@
 
 namespace CodingExercise\Command;
 
+use CodingExercise\Model\Converter\ConverterFactory;
 use CodingExercise\Model\Discount\Aggregator\CustomerMaxAmount;
 use CodingExercise\Model\Discount\Rule\LastMonthTotal;
 use CodingExercise\Model\Discount\Rule\XOrdersPerMonth;
@@ -26,6 +27,13 @@ class InvoiceBatchCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        try {
+            $this->validateArgs($input);
+        } catch (\InvalidArgumentException $e) {
+            $output->writeln($e->getMessage());
+            return;
+        }
+
         $discountService = new DiscountService(
             [
                 new XOrdersPerMonth(3, 10),
@@ -39,10 +47,23 @@ class InvoiceBatchCommand extends Command
             $input->getArgument('out')
         );
 
-        $invoiceService = new InvoiceService($storage, $discountService);
+        $converter = ConverterFactory::getConverter();
+
+        $invoiceService = new InvoiceService($storage, $converter, $discountService);
 
         $invoiceService->generate();
 
         $output->writeln('done');
+    }
+
+    private function validateArgs(InputInterface $input)
+    {
+        $val = $input->getArgument('in');
+        if (!file_exists($val)) {
+            throw new \InvalidArgumentException(sprintf('Invalid argument `in`. The path %s does not exists', $val));
+        }
+        if (!is_writable($val)) {
+            throw new \InvalidArgumentException(sprintf('Invalid argument `out`. The path %s is not writable', $val));
+        }
     }
 }

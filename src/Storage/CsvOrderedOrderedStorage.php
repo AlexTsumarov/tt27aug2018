@@ -32,6 +32,7 @@ class CsvOrderedOrderedStorage implements OrderedStorageInterface
     {
         $file = new \SplFileObject($this->in);
         $file->setFlags(\SplFileObject::READ_CSV);
+        $file->setCsvControl(',');
         $file->seek(PHP_INT_MAX);
 
         $rowsCount = $file->key() + 1;
