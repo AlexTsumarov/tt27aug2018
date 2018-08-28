@@ -1,10 +1,6 @@
 parameters:
     logger.key: command
     currency.default: EUR
-    rules:
-        ruleXOrdersPerMonth:
-            x: 3
-            percent: 10
 services:
     logger:
         class:     Monolog\Logger
@@ -29,7 +25,7 @@ services:
     discountService:
          class:    CodingExercise\Service\DiscountService
          arguments:
-             - [ '@ruleNoDiscount' ]
+             - [ '@ruleNoDiscount', '@ruleXOrdersPerMonth', '@ruleLastMonthTotal' ]
              - '@aggregator'
          calls:
             - [setLogger, ['@logger']]
