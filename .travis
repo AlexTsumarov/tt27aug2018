@@ -1,0 +1,13 @@
+language: php
+sudo: enabled
+env: SYMFONY_DEPRECATIONS_HELPER=disabled
+matrix:
+  fast_finish: true
+  include:
+    - php: 7.1
+before-install:
+  - composer self-update
+install:
+  - composer install
+script:
+  - php src/console.php invoice:convert ../data/in.csv ../data/out.csv
