@@ -4,7 +4,7 @@
  - `composer install`
 
 **How to run:**
- - `php src/console.php invoice:convert ../data/in.csv ../data/out.csv`
+ - `php src/console.php invoice:convert data/in.csv data/out.csv`
  
 **Other details:**
  - metrics can be found in `build/phpmetric/index.html`
