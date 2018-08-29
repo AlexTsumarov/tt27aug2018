@@ -10,4 +10,4 @@ before-install:
 install:
   - composer install
 script:
-  - php src/console.php invoice:convert ../data/in.csv ../data/out.csv
+  - php src/console.php invoice:convert data/in.csv data/out.csv
