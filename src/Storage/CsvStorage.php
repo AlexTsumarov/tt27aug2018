@@ -2,9 +2,9 @@
 
 namespace CodingExercise\Storage;
 
-use CodingExercise\Model\Currency\CurrencyFactory;
 use CodingExercise\Model\Object\Invoice;
 use CodingExercise\Model\Object\Purchase;
+use CodingExercise\Service\CurrencyService;
 use Money\Money;
 use Psr\Log\LoggerAwareTrait;
 
@@ -23,16 +23,16 @@ class CsvStorage implements OrderedStorageInterface
     const POS_AMOUNT    = 2;
     const POS_CURRENCY  = 3;
 
-    /* @var CurrencyFactory $cf */
+    /* @var CurrencyService $cf */
     private $cf;
     private $pathIn;
     private $pathOut;
 
     /**
      * CsvStorage constructor.
-     * @param CurrencyFactory $currencyFactory
+     * @param CurrencyService $currencyService
      */
-    public function __construct(CurrencyFactory $cf)
+    public function __construct(CurrencyService $cf)
     {
         $this->cf = $cf;
     }

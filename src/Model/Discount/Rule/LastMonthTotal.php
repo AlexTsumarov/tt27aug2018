@@ -4,6 +4,7 @@ namespace CodingExercise\Model\Discount\Rule;
 
 use CodingExercise\Model\Currency\CurrencyFactory;
 use CodingExercise\Model\Object\Purchase;
+use CodingExercise\Service\CurrencyService;
 use Money\Currency;
 use Money\Money;
 
@@ -18,7 +19,7 @@ class LastMonthTotal implements RuleInterface
     /* @var Currency $currency */
     private $currency;
 
-    function __construct(int $threshold, float $percent, CurrencyFactory $cf)
+    function __construct(int $threshold, float $percent, CurrencyService $cf)
     {
         $this->currency = $cf->getDefaultCurrency();
         $this->threshold = new Money($threshold, $this->currency);

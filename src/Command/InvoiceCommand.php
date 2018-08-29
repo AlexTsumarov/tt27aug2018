@@ -2,7 +2,6 @@
 
 namespace CodingExercise\Command;
 
-use CodingExercise\Storage\CsvOrderedOrderedStorage;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;

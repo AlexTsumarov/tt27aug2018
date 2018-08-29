@@ -1,6 +1,6 @@
 <?php
 
-namespace CodingExercise\Model\Currency;
+namespace CodingExercise\Service;
 
 use Money\Converter;
 use Money\Currencies\ISOCurrencies;
@@ -8,7 +8,7 @@ use Money\Currency;
 use Money\Exchange\FixedExchange;
 use Money\Exchange\ReversedCurrenciesExchange;
 
-class CurrencyFactory
+class CurrencyService
 {
     private $currencies    = [];
     private $exchangeRates = [];

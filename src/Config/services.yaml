@@ -5,8 +5,8 @@ services:
     logger:
         class:     Monolog\Logger
         arguments: ['%logger.key%']
-    currencyFactory:
-        class:     CodingExercise\Model\Currency\CurrencyFactory
+    currencyService:
+        class:     CodingExercise\Service\CurrencyService
         arguments:
             - '%currency.default%'
             - EUR:
@@ -19,7 +19,7 @@ services:
         arguments: [3,10]
     ruleLastMonthTotal:
         class:     CodingExercise\Model\Discount\Rule\LastMonthTotal
-        arguments: [1000,5,'@currencyFactory']
+        arguments: [1000,5,'@currencyService']
     aggregator:
         class:     CodingExercise\Model\Discount\Aggregator\CustomerMaxAmount
     discountService:
@@ -31,12 +31,12 @@ services:
             - [setLogger, ['@logger']]
     storage:
          class:     CodingExercise\Storage\CsvStorage
-         arguments: ['@currencyFactory']
+         arguments: ['@currencyService']
          calls:
             - [setLogger, ['@logger']]
     invoiceService:
          class:     CodingExercise\Service\InvoiceService
          arguments:
              - '@storage'
-             - '@currencyFactory'
+             - '@currencyService'
              - '@discountService'
